@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Bai Jamjuree, sans-serif;
+}
+
+body {
+  background-color: #616161;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  height: 100vh;
+}
+.main-container .detector-container {
+  position: relative;
+}
+.main-container .detector-container .video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.main-container .detector-container .video-container video,
+.main-container .detector-container .video-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.main-container .detector-container .button-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.main-container .detector-container .button-container .get-info {
+  background-color: #fa00ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.main-container .sidebar-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f2f2f2;
+}
+.main-container .sidebar-container .error-message {
+  color: red;
+}
+@media (max-width: 768px) {
+  .main-container .main-container {
+    grid-template-columns: 100%;
+  }
+  .main-container .sidebar-container {
+    width: 100%;
+  }
+}
