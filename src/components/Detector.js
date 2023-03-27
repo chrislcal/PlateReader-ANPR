@@ -4,10 +4,11 @@ import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import "@tensorflow/tfjs-backend-webgl";
 import FormData from "form-data";
 
+import Sidebar from './Sidebar';
+
 tf.setBackend("webgl");
 
-const Detector = ({ handleData }) => {
-  console.log("handleData function in Detector:", handleData);
+const Detector = () => {
   const videoRef = useRef();
   const canvasRef = useRef();
 
@@ -146,12 +147,12 @@ const drawPredictions = (predictions) => {
             );
   
             const plateResponse = await plateRequest.json();
-  
-            setPlateInfo(plateResponse);
+
             setErrorMessage("");
   
             if (plateResponse.results && plateResponse.results.length > 0) {
               const plateNumber = plateResponse.results[0].plate;
+              setPlateInfo(plateNumber);
   
               try {
                 const carInfoRequest = await fetch(
@@ -165,20 +166,19 @@ const drawPredictions = (predictions) => {
                 const carInfoResponse = await carInfoRequest.json();
                 console.log(carInfoResponse);
 
+                // Update the carInfo state with the car data
                 setCarInfo(carInfoResponse);
                 setErrorMessage("");
 
+                // Stop the interval and reset the capture button
+                clearInterval(interval);
+                setCaptureInterval(null);
+                setIsCapturing(false);
+  
               } catch (error) {
                 console.log(`Vegvesen: ${error}`);
               }
   
-              if (carInfo && plateInfo) {
-                handleData(carInfo, plateInfo, errorMessage);
-                clearInterval(captureInterval);
-                setCaptureInterval(null);
-                setIsCapturing(false);
-                console.log("handleData called"); // add this line
-              }
             } else {
               console.log("No plate detected");
             }
@@ -186,12 +186,13 @@ const drawPredictions = (predictions) => {
         } catch (error) {
           console.log(error);
           setErrorMessage("Failed to get data");
-          handleData(null, null, errorMessage);
+        
         }
       }, 4000);
       setCaptureInterval(interval);
     }
   };
+
   
 
   useEffect(() => {
@@ -246,11 +247,12 @@ const drawPredictions = (predictions) => {
           ref={canvasRef}
         />
       </div>
-      <div className="button-container">
-        <button className="get-info" onClick={handleGetInfo}>
-          {captureInterval ? "STOP" : "CAPTURE"}
-        </button>
-      </div>
+      <Sidebar carInfo={carInfo}
+       plateNumber={plateInfo}
+       errorMessage={errorMessage}
+       handleGetInfo={handleGetInfo}
+       captureInterval={captureInterval}
+      />
     </div>
   );
 };
